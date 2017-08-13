@@ -61,14 +61,6 @@ public class XMLTask {
         doc.appendChild(entries);
 
         Element entry;
-/*        for(int i: ENTRIES) {
-            entry = doc.createElement("entry");
-            Element field = doc.createElement("field");
-            field.setTextContent(String.valueOf(i));
-            entry.appendChild(field);
-            entries.appendChild(entry);
-        }*/
-
         for(Integer i: ENTRIES) {
             entry = doc.createElement("entry");
             Element field = doc.createElement("field");

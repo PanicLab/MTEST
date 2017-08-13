@@ -45,11 +45,6 @@ public class MainTaskDataAccessService implements TaskService<Integer> {
             PreparedStatement ps = connection.prepareStatement(sql);
             logger.info("Table TEST primary key constraint successfully added");
 
-/*            for(int i = 1; i <= number; i++) {
-                ps.setInt(1, i);
-                ps.addBatch();
-            }*/
-
             for (int i : taskData.getData()) {
                 ps.setInt(1, i);
                 ps.addBatch();

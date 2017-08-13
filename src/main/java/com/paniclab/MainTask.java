@@ -6,10 +6,12 @@ import com.paniclab.services.MainTaskDataAccessService;
 import com.paniclab.services.TaskService;
 
 import java.io.Serializable;
+import java.nio.file.Paths;
 import java.util.*;
 
 
 public class MainTask implements Serializable {
+    private static final long TIME_BUDGET = 1000*60*5L;
     private int number;
     private String url;
 
@@ -62,6 +64,7 @@ public class MainTask implements Serializable {
 
 
     public void execute() {
+        long start_time = System.currentTimeMillis();
         TaskService<Integer> service = new MainTaskDataAccessService(url);
         TaskData<Integer> data = getTaskData();
         service.populate(data);
@@ -69,5 +72,8 @@ public class MainTask implements Serializable {
 
         XMLTask xmlTask = new XMLTask(data);
         xmlTask.run();
+
+        XLSTTask xlstTask = new XLSTTask(Paths.get("files", "1.xml").toString());
+        xlstTask.run();
     }
 }
