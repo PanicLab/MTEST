@@ -1,5 +1,6 @@
-package com.paniclab;
+package com.paniclab.tasks;
 
+import com.paniclab.TaskData;
 import com.paniclab.services.MainTaskDataAccessService;
 import com.paniclab.services.TaskService;
 

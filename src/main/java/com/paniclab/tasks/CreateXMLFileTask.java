@@ -1,5 +1,6 @@
-package com.paniclab;
+package com.paniclab.tasks;
 
+import com.paniclab.TaskData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -22,7 +23,7 @@ public class CreateXMLFileTask implements Runnable {
     private final Path path;
 
 
-    CreateXMLFileTask(TaskData<Integer> taskData, Path path) {
+    public CreateXMLFileTask(TaskData<Integer> taskData, Path path) {
         ENTRIES = taskData.getData();
         this.path = path;
     }

@@ -1,4 +1,4 @@
-package com.paniclab;
+package com.paniclab.tasks;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

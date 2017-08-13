@@ -1,5 +1,6 @@
 package com.paniclab;
 
+import com.paniclab.tasks.*;
 import org.w3c.dom.Document;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class MainTask implements Serializable, Callable<Long> {
 
     public MainTask() {}
 
+
     public int getNumber() {
         return number;
     }
@@ -36,10 +38,13 @@ public class MainTask implements Serializable, Callable<Long> {
         this.url = url;
     }
 
+
+
     @Override
     public int hashCode() {
         return Objects.hash(number, url);
     }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -51,11 +56,14 @@ public class MainTask implements Serializable, Callable<Long> {
         return (this.number == other.number) && (this.url.equals(other.url));
     }
 
+
     @Override
     public String toString() {
         return "Объект " + getClass().getCanonicalName() + " @" + hashCode() + "." + System.lineSeparator()
                 + "Число N = " + number + ". Url = " + url;
     }
+
+
 
     public TaskData<Integer> getTaskData() {
         List<Integer> result = new ArrayList<>(number);
@@ -64,6 +72,16 @@ public class MainTask implements Serializable, Callable<Long> {
         }
         return new TaskDataImpl<>(result);
     }
+
+
+    public Collection<Integer> getData() {
+        List<Integer> result = new ArrayList<>(number);
+        for (int i = 1 ; i <= number; i++) {
+            result.add(i);
+        }
+        return result;
+    }
+
 
 
     @Override
@@ -88,6 +106,8 @@ public class MainTask implements Serializable, Callable<Long> {
         SummarizeTask summarizeTask = new SummarizeTask(document);
         return summarizeTask.call();
     }
+
+
 
     public static void main(String[] args) {
         MainTask task = new MainTask();

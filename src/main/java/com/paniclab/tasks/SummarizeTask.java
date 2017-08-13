@@ -1,4 +1,4 @@
-package com.paniclab;
+package com.paniclab.tasks;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -13,7 +13,7 @@ public class SummarizeTask implements Callable<Long> {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
     private final Document document;
 
-    SummarizeTask(Document doc) {
+    public SummarizeTask(Document doc) {
         document = doc;
     }
 

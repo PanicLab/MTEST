@@ -1,4 +1,4 @@
-package com.paniclab;
+package com.paniclab.tasks;
 
 import org.w3c.dom.*;
 
@@ -16,13 +16,14 @@ public class XLSTConversionTask implements Runnable {
     private final Document document;
     private final Path path;
 
-    XLSTConversionTask(Document doc, Path path) {
+    public XLSTConversionTask(Document doc, Path path) {
         document = doc;
         this.path = path;
     }
 
     @Override
     public void run() {
+        LOGGER.info("Conversion task xml -> xlst begin...");
         File out = path.toFile();
         NodeList list = document.getElementsByTagName("entry");
         int size = list.getLength();
