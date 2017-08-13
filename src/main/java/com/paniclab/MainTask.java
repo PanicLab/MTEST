@@ -1,17 +1,20 @@
 package com.paniclab;
 
-
-
-import com.paniclab.services.MainTaskDataAccessService;
-import com.paniclab.services.TaskService;
+import org.w3c.dom.Document;
 
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.*;
 
 
-public class MainTask implements Serializable {
-    private static final long TIME_BUDGET = 1000*60*5L;
+public class MainTask implements Serializable, Callable<Long> {
+    private static final String URL = "jdbc:h2:~/M-Test";
+    private static final int TIME_BUDGET = 5;
+    private static final Path FILE_1_XML = Paths.get("files", "1.xml");
+    private final Path FILE_2_XML = Paths.get("files", "2.xml");
+
     private int number;
     private String url;
 
@@ -63,17 +66,61 @@ public class MainTask implements Serializable {
     }
 
 
-    public void execute() {
-        long start_time = System.currentTimeMillis();
-        TaskService<Integer> service = new MainTaskDataAccessService(url);
-        TaskData<Integer> data = getTaskData();
-        service.populate(data);
-        data = service.loadPersisted();
+    @Override
+    public Long call() {
 
-        XMLTask xmlTask = new XMLTask(data);
-        xmlTask.run();
+        Runnable populateTask = new PopulateDataTask(getTaskData(), getUrl());
+        populateTask.run();
 
-        XLSTTask xlstTask = new XLSTTask(Paths.get("files", "1.xml").toString());
-        xlstTask.run();
+        LoadPersistedDataTask loadTask = new LoadPersistedDataTask(getUrl());
+        TaskData<Integer> data = loadTask.call();
+
+        Runnable createTask = new CreateXMLFileTask(data, FILE_1_XML);
+        createTask.run();
+
+        Document document = new ParseXMLTask(FILE_1_XML).call();
+
+        Runnable conversionTask = new XLSTConversionTask(document, FILE_2_XML);
+        conversionTask.run();
+
+        document = new ParseXMLTask(FILE_2_XML).call();
+
+        SummarizeTask summarizeTask = new SummarizeTask(document);
+        return summarizeTask.call();
+    }
+
+    public static void main(String[] args) {
+        MainTask task = new MainTask();
+
+        task.setNumber(10000);
+        task.setUrl(URL);
+        if(task.getNumber() >= 1000000) {
+            Long result = executeConcurrently(task);
+            System.out.println("Sum of elements (parallel) = " + result);
+
+        } else {
+            System.out.println("Sum of elements (singe thread) = " + task.call());
+        }
+    }
+
+    private static Long executeConcurrently(Callable<Long> task) {
+        Long result = 0L;
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Future<Long> future = executor.submit(task);
+        try {
+            result = future.get(TIME_BUDGET, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            System.out.println("This task was interrupted.");
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            System.out.println("The time for this operation has expired. Task was cancelled.");
+            e.printStackTrace();
+            future.cancel(true);
+        } finally {
+            executor.shutdown();
+        }
+        return result;
     }
 }

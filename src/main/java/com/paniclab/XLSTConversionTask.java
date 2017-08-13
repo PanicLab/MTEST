@@ -1,51 +1,29 @@
 package com.paniclab;
 
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
-public class XLSTTask {
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
-    private final String path;
 
-    XLSTTask(String path) {
+public class XLSTConversionTask implements Runnable {
+    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private final Document document;
+    private final Path path;
+
+    XLSTConversionTask(Document doc, Path path) {
+        document = doc;
         this.path = path;
     }
 
-    Document parseXMLFile() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        File file = Paths.get(path).toFile();
-        Document doc = null;
-        try {
-            doc = builder.parse(file);
-        } catch (SAXException | IOException e) {
-            e.printStackTrace();
-        }
-        LOGGER.info("xml file 1.xml successfully parsed.");
-        return doc;
-    }
-
-    void run() {
-        File out = Paths.get("files", "2.xml").toFile();
-
-        Document document = parseXMLFile();
+    @Override
+    public void run() {
+        File out = path.toFile();
         NodeList list = document.getElementsByTagName("entry");
         int size = list.getLength();
 
@@ -55,9 +33,9 @@ public class XLSTTask {
             Node node = list.item(i);
             while (node.hasChildNodes()) {
                 name = node.getFirstChild().getNodeName();
-                LOGGER.info("Child Node name:=" + name);
+                //LOGGER.info("Child Node name:=" + name);
                 value = node.getFirstChild().getTextContent();
-                LOGGER.info("Child Node value:=" + value);
+                //LOGGER.info("Child Node value:=" + value);
                 node.removeChild(node.getFirstChild());
             }
             Element.class.cast(node).setAttribute(name, value);
@@ -75,10 +53,9 @@ public class XLSTTask {
 
         try {
             transformer.transform(domSource, new StreamResult(out));
-            LOGGER.info("xml file 2.xml successfully created.");
+            LOGGER.info("xml file " + path.toString() + " successfully created.");
         } catch (TransformerException e) {
             e.printStackTrace();
         }
-
     }
 }

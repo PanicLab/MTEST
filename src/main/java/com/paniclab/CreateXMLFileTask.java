@@ -12,24 +12,27 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-public class XMLTask {
+public class CreateXMLFileTask implements Runnable {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
     private final Collection<Integer> ENTRIES;
+    private final Path path;
 
 
-    XMLTask(TaskData<Integer> taskData) {
+    CreateXMLFileTask(TaskData<Integer> taskData, Path path) {
         ENTRIES = taskData.getData();
+        this.path = path;
     }
 
 
+    @Override
     public void run() {
-        Document document = createXMLDocument();
+        Document document = createDOMDocument();
 
-        File file = Paths.get("files", "1.xml").toFile();
+        File file = path.toFile();
         LOGGER.info("File path:" + file.getAbsolutePath());
 
         Transformer transformer = null;
@@ -40,14 +43,14 @@ public class XMLTask {
         }
         try {
             transformer.transform(new DOMSource(document), new StreamResult(file));
-            LOGGER.info("XML document created successfully.");
+            LOGGER.info("XML document " + path.toString() + " created successfully.");
         } catch (TransformerException e) {
             e.printStackTrace();
         }
     }
 
 
-    private Document createXMLDocument() {
+    private Document createDOMDocument() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         Document doc = null;
