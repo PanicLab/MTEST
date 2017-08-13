@@ -34,9 +34,7 @@ public class XLSTConversionTask implements Runnable {
             Node node = list.item(i);
             while (node.hasChildNodes()) {
                 name = node.getFirstChild().getNodeName();
-                //LOGGER.info("Child Node name:=" + name);
                 value = node.getFirstChild().getTextContent();
-                //LOGGER.info("Child Node value:=" + value);
                 node.removeChild(node.getFirstChild());
             }
             Element.class.cast(node).setAttribute(name, value);

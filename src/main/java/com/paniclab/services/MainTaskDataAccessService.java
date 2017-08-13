@@ -1,8 +1,5 @@
 package com.paniclab.services;
 
-import com.paniclab.TaskData;
-import com.paniclab.TaskDataImpl;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +42,7 @@ public class MainTaskDataAccessService implements TaskService<Integer> {
             PreparedStatement ps = connection.prepareStatement(sql);
             LOGGER.info("Table TEST primary key constraint successfully added");
 
+            LOGGER.info("Data access service begin to populate data...");
             for (int i : taskData.getData()) {
                 ps.setInt(1, i);
                 ps.addBatch();
@@ -119,13 +117,13 @@ public class MainTaskDataAccessService implements TaskService<Integer> {
             statement.close();
 
             LOGGER.info("Data retrieved successfully. Number of results: " + resultList.size());
-            return new TaskDataImpl<>(resultList);
+            return TaskData.get(resultList);
 
         } catch (SQLException e) {
             processSQLException(e);
         }
 
         LOGGER.warning("Has no data.");
-        return new TaskDataImpl<>(Collections.emptyList());
+        return TaskData.get(Collections.emptyList());
     }
 }

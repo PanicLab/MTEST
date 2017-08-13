@@ -31,7 +31,6 @@ public class SummarizeTask implements Callable<Long> {
         for (int i = 0; i < size; i++) {
             Node node = list.item(i);
             value = node.getAttributes().getNamedItem("field").getNodeValue();
-            //LOGGER.info("Element value:=" + value);
             values.add(Integer.valueOf(value));
         }
 

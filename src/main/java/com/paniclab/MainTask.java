@@ -1,5 +1,6 @@
 package com.paniclab;
 
+import com.paniclab.services.TaskData;
 import com.paniclab.tasks.*;
 import org.w3c.dom.Document;
 
@@ -10,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 
-public class MainTask implements Serializable, Callable<Long> {
+public class MainTask implements Serializable, Callable<Long>, TaskData<Integer> {
     private static final String URL = "jdbc:h2:~/M-Test";
     private static final int TIME_BUDGET = 5;
     private static final Path FILE_1_XML = Paths.get("files", "1.xml");
@@ -66,14 +67,10 @@ public class MainTask implements Serializable, Callable<Long> {
 
 
     public TaskData<Integer> getTaskData() {
-        List<Integer> result = new ArrayList<>(number);
-        for (int i = 1 ; i <= number; i++) {
-            result.add(i);
-        }
-        return new TaskDataImpl<>(result);
+        return TaskData.get(getData());
     }
 
-
+    @Override
     public Collection<Integer> getData() {
         List<Integer> result = new ArrayList<>(number);
         for (int i = 1 ; i <= number; i++) {
@@ -112,10 +109,10 @@ public class MainTask implements Serializable, Callable<Long> {
     public static void main(String[] args) {
         MainTask task = new MainTask();
 
-        task.setNumber(10000);
+        task.setNumber(100);
         task.setUrl(URL);
-        if(task.getNumber() >= 1000000) {
-            Long result = executeConcurrently(task);
+        if(task.getNumber() >= 100000) {
+            Long result = executeParallel(task);
             System.out.println("Sum of elements (parallel) = " + result);
 
         } else {
@@ -123,7 +120,7 @@ public class MainTask implements Serializable, Callable<Long> {
         }
     }
 
-    private static Long executeConcurrently(Callable<Long> task) {
+    private static Long executeParallel(Callable<Long> task) {
         Long result = 0L;
         ExecutorService executor = Executors.newFixedThreadPool(1);
         Future<Long> future = executor.submit(task);

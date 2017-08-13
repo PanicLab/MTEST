@@ -1,6 +1,6 @@
 package com.paniclab.tasks;
 
-import com.paniclab.TaskData;
+import com.paniclab.services.TaskData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
