@@ -9,7 +9,7 @@ import java.util.List;
 class TaskDataImpl<T> implements TaskData<T> {
     private final List<T> data;
 
-    public TaskDataImpl(Collection<T> collection) {
+    TaskDataImpl(Collection<T> collection) {
         data = Collections.unmodifiableList(new ArrayList<>(collection));
     }
 

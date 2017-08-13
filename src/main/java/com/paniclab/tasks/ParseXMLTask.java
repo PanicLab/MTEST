@@ -9,17 +9,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 public class ParseXMLTask implements Callable<Document> {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
     private final Path path;
-
-    public ParseXMLTask(String path) {
-        this.path = Paths.get(path);
-    }
 
     public ParseXMLTask(Path path) {
         this.path = path;
