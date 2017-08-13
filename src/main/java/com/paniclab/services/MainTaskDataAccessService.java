@@ -59,6 +59,7 @@ public class MainTaskDataAccessService implements TaskService<Integer> {
             } finally {
                 connection.setAutoCommit(true);
                 statement.close();
+                ps.close();
             }
 
         } catch (SQLException e) {
