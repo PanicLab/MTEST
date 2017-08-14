@@ -15,7 +15,7 @@ public class MainTask implements Serializable, Callable<Long>, TaskData<Integer>
     private static final String URL = "jdbc:h2:~/M-Test";
     private static final int TIME_BUDGET = 5;
     private static final Path FILE_1_XML = Paths.get("files", "1.xml");
-    private final Path FILE_2_XML = Paths.get("files", "2.xml");
+    private static final Path FILE_2_XML = Paths.get("files", "2.xml");
 
     private int number;
     private String url;
@@ -116,7 +116,7 @@ public class MainTask implements Serializable, Callable<Long>, TaskData<Integer>
             System.out.println("Sum of elements (parallel) = " + result);
 
         } else {
-            System.out.println("Sum of elements (singe thread) = " + task.call());
+            System.out.println("Sum of elements (single thread) = " + task.call());
         }
     }
 
